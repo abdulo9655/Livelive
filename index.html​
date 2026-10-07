@@ -1,0 +1,253 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LiveVerse — Live Your Moment</title>
+<style>
+*{box-sizing:border-box}
+:root{--bg:#100d19;--panel:#1d1729;--pink:#ff4ca1;--purple:#a16bff;--text:#fff;--muted:#b9afc9}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,"Noto Sans Thai",sans-serif}
+header{height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 6%;border-bottom:1px solid #ffffff15;position:sticky;top:0;background:#100d19ed;z-index:10}
+.logo{font-size:25px;font-weight:900;background:linear-gradient(90deg,#ff4ca1,#a16bff);color:transparent;background-clip:text}
+button{border:0;border-radius:12px;padding:11px 17px;background:linear-gradient(120deg,var(--pink),var(--purple));color:white;font-weight:bold;cursor:pointer}
+button:hover{filter:brightness(1.15)}
+.secondary{background:#ffffff12;border:1px solid #ffffff20}
+main{max-width:1250px;margin:auto;padding:28px 20px}
+.hero{padding:35px 0 25px}
+.hero h1{font-size:clamp(32px,5vw,58px);margin:0 0 12px;line-height:1.2}
+.gradient{background:linear-gradient(90deg,#ff4ca1,#a16bff);color:transparent;background-clip:text}
+p{color:var(--muted);line-height:1.7}
+.categories{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0}
+.category{padding:10px 16px;border-radius:25px;background:#ffffff0b;border:1px solid #ffffff16;cursor:pointer}
+.category.active{background:#ff4ca12b;border-color:var(--pink)}
+h2{font-size:23px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px}
+.card{background:var(--panel);border:1px solid #ffffff12;border-radius:18px;overflow:hidden;cursor:pointer;transition:.2s}
+.card:hover{transform:translateY(-4px);border-color:#a16bff88}
+.cover{height:175px;display:flex;align-items:center;justify-content:center;font-size:65px;position:relative;background:linear-gradient(135deg,#49245c,#b63877)}
+.cover.blue{background:linear-gradient(135deg,#172d5b,#386ac2)}
+.cover.orange{background:linear-gradient(135deg,#62331e,#d98245)}
+.cover.green{background:linear-gradient(135deg,#17483f,#40a887)}
+.live-tag{position:absolute;top:12px;left:12px;background:#f33b63;padding:5px 9px;border-radius:6px;font-size:11px;font-weight:bold}
+.viewers{position:absolute;bottom:10px;right:12px;background:#0009;padding:5px 9px;border-radius:8px;font-size:12px}
+.card-info{padding:15px}
+.card-info h3{margin:0 0 7px;font-size:17px}
+.avatar{display:inline-flex;width:30px;height:30px;border-radius:50%;align-items:center;justify-content:center;background:#392b4b;margin-right:8px}
+.name{color:var(--muted);font-size:13px}
+footer{text-align:center;padding:35px;color:#796e8b;font-size:12px}
+.modal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:15px;z-index:20}
+.modal.show{display:flex}
+.dialog{background:#21192f;border:1px solid #ffffff20;border-radius:20px;padding:24px;width:min(440px,100%);max-height:90vh;overflow:auto}
+.dialog h2{margin-top:0}
+input,select{width:100%;padding:13px;margin:7px 0 14px;border-radius:10px;border:1px solid #ffffff22;background:#100d19;color:white}
+.close{float:right;background:#ffffff12}
+.room{position:fixed;inset:0;background:#100d19;z-index:30;display:none;grid-template-columns:1fr 330px}
+.room.show{display:grid}
+.video{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;background:radial-gradient(ellipse,#38214c,#100d19 70%)}
+.big-avatar{font-size:100px}
+.chat{display:flex;flex-direction:column;border-left:1px solid #ffffff18;padding:15px;min-height:0}
+.chat-head{display:flex;justify-content:space-between;align-items:center}
+.messages{flex:1;overflow:auto;min-height:100px}
+.message{font-size:14px;line-height:1.5;margin:12px 0;overflow-wrap:anywhere}
+.chat-input{display:flex;gap:6px}
+.chat-input input{margin:0;min-width:0}
+.gifts{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.gifts button{padding:9px;background:#ffffff12}
+@media(max-width:650px){header{padding:0 15px}.hero{padding-top:25px}.room.show{grid-template-columns:1fr;grid-template-rows:1fr 43vh}.video{min-height:240px}.chat{border-left:0;border-top:1px solid #ffffff18}.big-avatar{font-size:65px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">✦ LiveVerse</div>
+  <div style="display:flex;gap:8px">
+    <button class="secondary" onclick="openModal('viewer')">เข้าชม</button>
+    <button onclick="openModal('streamer')">🔴 เริ่มไลฟ์</button>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div style="color:#ff78bb;font-weight:bold;letter-spacing:3px">YOUR WORLD. YOUR LIVE.</div>
+    <h1>ทุกช่วงเวลา<br><span class="gradient">มีคนอยากรับชม</span></h1>
+    <p>ค้นพบไลฟ์ใหม่ ๆ พูดคุย ส่งหัวใจ และแบ่งปันช่วงเวลาของคุณ</p>
+    <button onclick="openModal('streamer')">＋ สร้างห้องไลฟ์</button>
+    <button class="secondary" onclick="document.getElementById('lives').scrollIntoView({behavior:'smooth'})">ค้นหาไลฟ์ ↓</button>
+  </section>
+
+  <div class="categories" id="categories">
+    <div class="category active" onclick="filterLives('ทั้งหมด',this)">✨ ทั้งหมด</div>
+    <div class="category" onclick="filterLives('ดูดวง',this)">🔮 ดูดวง</div>
+    <div class="category" onclick="filterLives('เพลง',this)">🎤 เพลง</div>
+    <div class="category" onclick="filterLives('เกม',this)">🎮 เกม</div>
+    <div class="category" onclick="filterLives('พูดคุย',this)">💬 พูดคุย</div>
+  </div>
+
+  <h2 id="lives">🔥 กำลังไลฟ์ <span style="color:#8f7fa5;font-size:13px">LIVE NOW</span></h2>
+  <div class="grid" id="liveGrid">
+    <div class="card" data-category="เพลง" onclick="openRoom('Music Night','🎤','เพลง')">
+      <div class="cover"><span class="live-tag">● LIVE</span>🎤<span class="viewers">👁 128</span></div>
+      <div class="card-info"><h3>Music Night 🎶</h3><p>ร้องเพลงด้วยกันคืนนี้</p><span class="avatar">🎧</span><span class="name">Melody Room · เพลง</span></div>
+    </div>
+    <div class="card" data-category="เกม" onclick="openRoom('Gaming Zone','🎮','เกม')">
+      <div class="cover blue"><span class="live-tag">● LIVE</span>🎮<span class="viewers">👁 86</span></div>
+      <div class="card-info"><h3>Gaming Zone</h3><p>มาเล่นเกมและพูดคุยกัน</p><span class="avatar">🕹️</span><span class="name">Player One · เกม</span></div>
+    </div>
+    <div class="card" data-category="ดูดวง" onclick="openRoom('มุมดูดวง','🔮','ดูดวง')">
+      <div class="cover"><span class="live-tag">● LIVE</span>🔮<span class="viewers">👁 54</span></div>
+      <div class="card-info"><h3>มุมดูดวง ✨</h3><p>พูดคุยเรื่องดวงเพื่อความบันเทิง</p><span class="avatar">🌙</span><span class="name">Moonlight · ดูดวง</span></div>
+    </div>
+    <div class="card" data-category="พูดคุย" onclick="openRoom('Chill Talk','💬','พูดคุย')">
+      <div class="cover green"><span class="live-tag">● LIVE</span>💬<span class="viewers">👁 42</span></div>
+      <div class="card-info"><h3>Chill Talk</h3><p>พื้นที่พูดคุยและหาเพื่อน</p><span class="avatar">☕</span><span class="name">Cozy Corner · พูดคุย</span></div>
+    </div>
+  </div>
+  <p id="empty" style="display:none">ยังไม่มีห้องในหมวดหมู่นี้</p>
+</main>
+<footer>✦ LiveVerse · Share your moment with the world</footer>
+
+<div class="modal" id="viewer">
+  <div class="dialog">
+    <button class="close" onclick="closeModal('viewer')">✕</button>
+    <h2>👋 เข้าสู่ LiveVerse</h2>
+    <p>ใส่ชื่อที่ต้องการใช้ในห้องไลฟ์</p>
+    <input id="viewerName" placeholder="ชื่อผู้ชม">
+    <button style="width:100%" onclick="enterViewer()">เข้าชมไลฟ์</button>
+  </div>
+</div>
+
+<div class="modal" id="streamer">
+  <div class="dialog">
+    <button class="close" onclick="closeModal('streamer')">✕</button>
+    <h2>🔴 สร้างห้องไลฟ์</h2>
+    <label>ชื่อห้อง</label><input id="streamTitle" placeholder="เช่น มาร้องเพลงกัน">
+    <label>หมวดหมู่</label>
+    <select id="streamCategory"><option>พูดคุย</option><option>เพลง</option><option>เกม</option><option>ดูดวง</option></select>
+    <label>ชื่อสตรีมเมอร์</label><input id="streamName" placeholder="ชื่อที่แสดง">
+    <button style="width:100%" onclick="startLive()">สร้างห้องและเปิดสตูดิโอ</button>
+    <p style="font-size:12px">ต้นแบบนี้ยังไม่ส่งภาพและเสียงสดไปให้ผู้ชมคนอื่น</p>
+  </div>
+</div>
+
+<div class="room" id="room">
+  <section class="video">
+    <div style="width:100%;display:flex;justify-content:space-between;align-items:center">
+      <span id="roomTitle">กำลังไลฟ์</span>
+      <button class="secondary" onclick="closeRoom()">✕ ออกจากห้อง</button>
+    </div>
+    <div class="big-avatar" id="roomEmoji">🎤</div>
+    <h2 id="roomHost">LiveVerse</h2>
+    <p id="roomCategory">ห้องไลฟ์</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+      <button onclick="sendHeart()">💗 ส่งหัวใจ <span id="heartCount">0</span></button>
+      <button class="secondary" onclick="toggleCamera()">📷 เปิด/ปิดกล้อง</button>
+      <button class="secondary" onclick="toggleMic()">🎙️ เปิด/ปิดไมค์</button>
+    </div>
+    <video id="preview" autoplay muted playsinline style="display:none;width:min(100%,600px);max-height:45vh;border-radius:15px;margin-top:15px;background:#000"></video>
+    <p id="mediaStatus">ห้องตัวอย่าง · ยังไม่มีการถ่ายทอดสดจริง</p>
+  </section>
+  <aside class="chat">
+    <div class="chat-head"><h3>💬 ไลฟ์แชต</h3><span id="coinDisplay">🪙 100</span></div>
+    <div class="messages" id="messages"><div class="message">ระบบ: ยินดีต้อนรับสู่ LiveVerse ✨</div></div>
+    <div class="gifts">
+      <button onclick="sendGift('🌹',10)">🌹 10</button>
+      <button onclick="sendGift('💎',30)">💎 30</button>
+      <button onclick="sendGift('👑',50)">👑 50</button>
+    </div>
+    <div class="chat-input"><input id="chatInput" placeholder="พิมพ์ข้อความ..." onkeydown="if(event.key==='Enter')sendMessage()"><button onclick="sendMessage()">ส่ง</button></div>
+  </aside>
+</div>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbyazeeL47uspOK_6WYK77tBfo-eZhtbs3Yj5Y_gU0R_SlOvqPEcfhfDFB5BSLFmHFhZ/exec";
+let viewer = localStorage.getItem('lv_name') || '';
+let coins = 100, hearts = 0, stream = null, cameraOn = false, micOn = false;
+let activeRoom = null;
+
+function openModal(id){document.getElementById(id).classList.add('show')}
+function closeModal(id){document.getElementById(id).classList.remove('show')}
+function filterLives(category,el){
+  document.querySelectorAll('.category').forEach(x=>x.classList.remove('active'));
+  el.classList.add('active');let count=0;
+  document.querySelectorAll('#liveGrid .card').forEach(card=>{
+    const show=category==='ทั้งหมด'||card.dataset.category===category;
+    card.style.display=show?'':'none';if(show)count++;
+  });
+  document.getElementById('empty').style.display=count?'none':'block';
+}
+function enterViewer(){
+  const n=document.getElementById('viewerName').value.trim();
+  if(!n){alert('กรุณาใส่ชื่อก่อน');return}
+  viewer=n;localStorage.setItem('lv_name',n);closeModal('viewer');
+  alert('ยินดีต้อนรับ '+n+'! เลือกห้องไลฟ์เพื่อเข้าชมได้เลย');
+}
+function openRoom(title,emoji,category,host){
+  activeRoom={title,emoji,category,host:host||'LiveVerse'};
+  document.getElementById('roomTitle').textContent='🔴 '+title;
+  document.getElementById('roomEmoji').textContent=emoji;
+  document.getElementById('roomHost').textContent=activeRoom.host;
+  document.getElementById('roomCategory').textContent=category;
+  document.getElementById('room').classList.add('show');
+  document.getElementById('messages').innerHTML='<div class="message">ระบบ: ยินดีต้อนรับสู่ '+escapeHTML(title)+' ✨</div>';
+  hearts=0;document.getElementById('heartCount').textContent=hearts;
+}
+async function startLive(){
+  const title=document.getElementById('streamTitle').value.trim();
+  const name=document.getElementById('streamName').value.trim();
+  const cat=document.getElementById('streamCategory').value;
+  if(!title||!name){alert('กรุณากรอกชื่อห้องและชื่อสตรีมเมอร์');return}
+  viewer=name;localStorage.setItem('lv_name',name);
+  closeModal('streamer');
+  openRoom(title,'📹',cat,name);
+  document.getElementById('mediaStatus').textContent='กดเปิดกล้องเพื่อทดลองภาพและเสียงบนอุปกรณ์นี้';
+  try{
+    await fetch(API_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'startLive',title:title,category:cat,host:name})});
+  }catch(e){console.log('Backend connection issue',e)}
+}
+async function toggleCamera(){
+  if(!stream){
+    try{
+      stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+      document.getElementById('preview').srcObject=stream;
+      document.getElementById('preview').style.display='block';
+      cameraOn=true;micOn=true;
+      document.getElementById('mediaStatus').textContent='เปิดกล้องและไมค์บนอุปกรณ์นี้แล้ว (ยังไม่ได้ส่งให้ผู้ชมคนอื่น)';
+    }catch(e){alert('เปิดกล้อง/ไมค์ไม่ได้ กรุณาใช้ HTTPS และอนุญาตสิทธิ์กล้องกับไมค์')}
+  }else{
+    cameraOn=!cameraOn;stream.getVideoTracks().forEach(t=>t.enabled=cameraOn);
+    document.getElementById('mediaStatus').textContent=cameraOn?'เปิดกล้องแล้ว':'ปิดกล้องแล้ว';
+  }
+}
+function toggleMic(){
+  if(!stream){alert('กรุณาเปิดกล้องก่อนเพื่อขอสิทธิ์ไมค์');return}
+  micOn=!micOn;stream.getAudioTracks().forEach(t=>t.enabled=micOn);
+  document.getElementById('mediaStatus').textContent=micOn?'เปิดไมค์แล้ว':'ปิดไมค์แล้ว';
+}
+function closeRoom(){
+  if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}
+  document.getElementById('preview').style.display='none';
+  document.getElementById('room').classList.remove('show');
+  cameraOn=false;micOn=false;
+}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function sendMessage(){
+  const input=document.getElementById('chatInput'),text=input.value.trim();
+  if(!text)return;if(!viewer){openModal('viewer');return}
+  addMessage(viewer,text);input.value='';
+}
+function addMessage(name,text){
+  const el=document.createElement('div');el.className='message';
+  el.innerHTML='<b style="color:#ff82c0">'+escapeHTML(name)+':</b> '+escapeHTML(text);
+  const box=document.getElementById('messages');box.appendChild(el);box.scrollTop=box.scrollHeight;
+}
+function sendHeart(){hearts++;document.getElementById('heartCount').textContent=hearts;addMessage('ระบบ','💗 '+(viewer||'ผู้ชม')+' ส่งหัวใจ')}
+function sendGift(gift,cost){
+  if(!viewer){openModal('viewer');return}
+  if(coins<cost){alert('เหรียญไม่พอ');return}
+  coins-=cost;document.getElementById('coinDisplay').textContent='🪙 '+coins;
+  addMessage('ของขวัญ',viewer+' ส่ง '+gift+' ให้ห้องนี้!');
+}
+</script>
+</body>
+</html>
